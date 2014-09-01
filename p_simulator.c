@@ -15,6 +15,9 @@ struct particle {
 	int particle_id;
 	int x;
 	int y;
+	float velocity;
+	float momentum;
+	float direction;
 	
 } particles[MAX_PARTICLES];
 
@@ -23,7 +26,7 @@ float dist2d (float *x1, float *x2, float *y1, float *y2);
 void ClearScreen();
 void spawn_particle(void);
 void set_particles(void);
-float rand_num(gsl_rng *r, float sigma);
+float rand_num(gsl_rng *r, float sigma, float mu);
 
 // Declare simulation starting values
 // number of starting particles
@@ -36,9 +39,9 @@ int bf_mu			= 2;
 // default mean particle size 
 int p_size_mu		= 5;
 // default mean electrostatic force strength
-int ef_force_mu	= 100;
+int ef_mu	= 100;
 // default mean electrostatic radius
-int ef_force_r_mu	= 25;
+int ef_r_mu	= 25;
 // matrix width (x) and height (y)
 int mtrx_x	= 50;
 int mtrx_y	= 50;
@@ -62,7 +65,7 @@ int main() {
 		printf("Menu:\n");
 		printf("(p) # starting particles: %d\n", num_start_particles);
 		printf("(s) # simulation steps: %d\n", num_steps);
-		printf("(b) brownian motion strength: %d\n", brownian_factor);
+		printf("(b) brownian motion strength: %d\n", bf_mu);
 		scanf(" %c", &code);
 		while (getchar() != '\n') /* skips to end of line */
 			;
@@ -143,7 +146,7 @@ int main() {
 			printf("Step: %d\n", steps_i);
 			
 			// Random Gaussian variate = r, sigma + mu
-			rand_num_gauss = rand_num(r,2) + mu;
+			rand_num_gauss = rand_num(r,2, p_size_mu);
 			
 			printf("Rand num: %f\n",rand_num_gauss);
 			
@@ -208,13 +211,13 @@ float dist2d (float *x1, float *x2, float *y1, float *y2) {
 	return sqrt(pow((*x1-*x2),2)+pow(*y1-*y2,2));
 }
 
-float rand_num(gsl_rng *r, float sigma) {
+float rand_num(gsl_rng *r, float sigma, float mu) {
 	int i,n;
 	n = 1;
-  	float gauss;  
+  	float gauss; 
   	
   	for (i=0;i<n;i++) {
-      gauss=gsl_ran_gaussian(r,sigma);
+      gauss=gsl_ran_gaussian(r,sigma) + mu;
      // printf("%2.4f\n", gauss);
 	}
 	return gauss;
