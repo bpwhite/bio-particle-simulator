@@ -1,6 +1,6 @@
 # build an executable named myprog from myprog.c
-all: p_simulator.c
-	gcc -g -Wall -o p_simulator p_simulator.c -lm -lcurses -lgsl -lgslcblas
+all: spart_simulator.c
+	gcc -g -Wall -o spart_simulator spart_simulator.c -lm -lcurses -lgsl -lgslcblas
 
 clean:
-	$(RM) p_simulator
+	$(RM) spart_simulator
